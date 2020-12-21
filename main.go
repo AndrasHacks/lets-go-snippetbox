@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strconv"
 )
 
 func home(w http.ResponseWriter, r *http.Request) {
@@ -16,7 +17,13 @@ func home(w http.ResponseWriter, r *http.Request) {
 }
 
 func showSnippet(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Show a specific snippet."))
+	dngID := r.URL.Query().Get("id")
+	id, err := strconv.Atoi(dngID)
+	if err != nil || id < 1 {
+		http.Error(w, "404 page not found", 404)
+		return
+	}
+	fmt.Fprintf(w, "Show %d specific snippet.", id)
 }
 
 func createSnippet(w http.ResponseWriter, r *http.Request) {
